@@ -4,5 +4,7 @@
 #include <Arduino.h>
 
 void blink(uint8_t pin, int ms);
-// do it here
+
+// now done
+
 #endif
