@@ -2,22 +2,15 @@
 #include <Arduino.h>
 
 #include "blink.h"
-#define onboard 13
+
+#define ONBOARDLED 13
+#define LED 12
 
 void setup() {
-    pinMode(onboard, OUTPUT);
-    Serial.begin(9600);
+    pinMode(ONBOARDLED, OUTPUT);
+    pinMode(LED, OUTPUT);
 }
 void loop() {
-    blink(onboard, 100);
-    blink(onboard, 100);
-    blink(onboard, 50);
-    blink(onboard, 50);
-    blink(onboard, 50);
-    blink(onboard, 50);
-    blink(onboard, 50);
-    blink(onboard, 50);
-    blink(onboard, 100);
-    blink(onboard, 500);
-    Serial.println("Loop complete");
+    blink(ONBOARDLED, 500);
+    blink(LED, 500);
 }
