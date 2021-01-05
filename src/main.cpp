@@ -4,23 +4,22 @@
 #include "blink.h"
 
 #define ONBOARDLED 13
-#define LED 12
+#define LED10 10
+#define LED11 11
+#define LED12 12
 #define SWITCH1 2
+#define SWITCH2 3
+#define SWITCH3 4
 #define ON 1
 #define OFF 0
-
-// changes
+int outputs[] = {ONBOARDLED, LED10, LED11, LED12};
+int inputs[] = {SWITCH1, SWITCH2, SWITCH3};
 void setup() {
-    pinMode(ONBOARDLED, OUTPUT);
-    pinMode(LED, OUTPUT);
-    pinMode(SWITCH1, INPUT);
-    // Serial.begin(9600);
+    for (int item : outputs) pinMode(item, OUTPUT);
+    for (int item : inputs) pinMode(item, INPUT);
 }
 void loop() {
-    // Serial.println(digitalRead(SWITCH1));
-    if (digitalRead(SWITCH1) == ON) {
-        digitalWrite(LED, ON);
-    } else {
-        digitalWrite(LED, OFF);
-    }
+    digitalWrite(LED10, digitalRead(SWITCH1) == ON);
+    digitalWrite(LED11, digitalRead(SWITCH2) == ON);
+    digitalWrite(LED12, digitalRead(SWITCH3) == ON);
 }
