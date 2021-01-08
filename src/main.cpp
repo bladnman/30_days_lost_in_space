@@ -1,30 +1,30 @@
 #include <Arduino.h>
 
-int onboardLED = 13;
-int sensorPin = A0;
-int sensorValue = 0;
-
-unsigned int batteryCapacity = 50000;
-unsigned int batteryLevel = 0;
-
-void PrintBatteryPercentage() {
-    Serial.print(((double)batteryLevel / (double)batteryCapacity) * 100);
-    Serial.println("%");
+int red = 11;
+int green = 10;
+int blue = 9;
+void RGB_color(int red_value, int green_value, int blue_value) {
+    analogWrite(red, red_value);
+    analogWrite(green, green_value);
+    analogWrite(blue, blue_value);
 }
 void setup() {
     Serial.begin(9600);
-    pinMode(onboardLED, OUTPUT);
+    pinMode(red, OUTPUT);
+    pinMode(green, OUTPUT);
+    pinMode(blue, OUTPUT);
 }
 void loop() {
-    sensorValue = analogRead(sensorPin);  // read the value from the sensor:
-    batteryLevel += sensorValue;
-
-    if (batteryLevel >= batteryCapacity) {
-        Serial.println("FULLY CHARGED");
-        batteryLevel = batteryCapacity;  // to prevent integer overflow errors
-    } else {
-        PrintBatteryPercentage();
-    }
-
-    delay(50);
+    RGB_color(125, 0, 0);  // Red
+    delay(500);
+    RGB_color(0, 125, 0);  // Green
+    delay(500);
+    RGB_color(0, 0, 125);  // Blue
+    delay(500);
+    RGB_color(0, 125, 125);  // yellow
+    delay(500);
+    RGB_color(125, 0, 125);  // purple
+    delay(500);
+    RGB_color(125, 125, 125);  // white
+    delay(500);
 }
