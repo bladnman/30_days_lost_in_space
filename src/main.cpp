@@ -4,25 +4,27 @@ int onboardLED = 13;
 int sensorPin = A0;
 int sensorValue = 0;
 
-int minLight = 0;
-int maxLight = 700;
-int maxDelayMs = 1000;
+unsigned int batteryCapacity = 50000;
+unsigned int batteryLevel = 0;
 
+void PrintBatteryPercentage() {
+    Serial.print(((double)batteryLevel / (double)batteryCapacity) * 100);
+    Serial.println("%");
+}
 void setup() {
     Serial.begin(9600);
     pinMode(onboardLED, OUTPUT);
 }
 void loop() {
-    sensorValue = analogRead(sensorPin);
-    Serial.println(sensorValue);
+    sensorValue = analogRead(sensorPin);  // read the value from the sensor:
+    batteryLevel += sensorValue;
 
-    float lightPerc = (float)(maxLight - sensorValue) / (float)(maxLight - minLight);
-    float delayFloat = maxDelayMs * lightPerc;
-    int delayMs = (int)delayFloat;
+    if (batteryLevel >= batteryCapacity) {
+        Serial.println("FULLY CHARGED");
+        batteryLevel = batteryCapacity;  // to prevent integer overflow errors
+    } else {
+        PrintBatteryPercentage();
+    }
 
-    digitalWrite(onboardLED, HIGH);
-    delay(delayMs);
-    digitalWrite(onboardLED, LOW);
-    delay(delayMs);
-    Serial.println(delayMs);
+    delay(50);
 }
