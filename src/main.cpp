@@ -5,7 +5,8 @@ int buzzer = 10;
 
 const byte ROWS = 4;
 const byte COLS = 4;
-
+const byte passLength = 4;
+char password[passLength] = {'1', '2', '3', '4'};
 char buttons[ROWS][COLS] = {
     {'1', '2', '3', 'A'},
     {'4', '5', '6', 'B'},
@@ -14,38 +15,86 @@ char buttons[ROWS][COLS] = {
 
 // byte rowPins[ROWS] = {9, 8, 7, 6};
 // byte colPins[COLS] = {2, 3, 4, 5};
-
 byte rowPins[ROWS] = {5, 4, 3, 2};
 byte colPins[COLS] = {6, 7, 8, 9};
 
-int tones[ROWS][COLS] = {
-    {31, 93, 147, 208},
-    {247, 311, 370, 440},
-    {523, 587, 698, 880},
-    {1397, 2637, 3729, 4978}};
 Keypad customKeypad = Keypad(makeKeymap(buttons), rowPins, colPins, ROWS, COLS);
 
 void setup() {
     Serial.begin(9600);
+    Serial.println("");
+    Serial.println("Options:");
+    Serial.println("---------------------");
+    Serial.println("- [*] to set a new password");
+    Serial.println("- [#] to access the system");
+    Serial.println("---------------------");
+}
+int unlockMode() {
+    char customKey = customKeypad.getKey();
+    Serial.println("Unlock Mode...");
+    delay(500);
+    Serial.println("Type Password to continue");
+
+    for (int i = 0; i < passLength; i++) {
+        // waiting for input
+        while (!(customKey = customKeypad.getKey())) {
+            // wait for input -- noop
+        }
+        // incorrect key
+        if (password[i] != customKey) {
+            Serial.println("");
+            Serial.println("WRONG KEY");
+            return -1;
+        }
+        Serial.print("*");
+    }
+    Serial.println("");
+    Serial.println("Device Unlocked");
+    return 0;
+}
+void changePassword() {
+    char customKey = customKeypad.getKey();
+
+    Serial.println("Welcome sir. What would you like your new password to be?");
+    delay(500);
+
+    for (int i = 0; i < passLength; i++) {
+        // waiting for input
+        while (!(customKey = customKeypad.getKey())) {
+            // wait for input -- noop
+        }
+        password[i] = customKey;
+
+        Serial.print("*");
+    }
+    Serial.println("");
 }
 void loop() {
-    int toneFreq = 0;
-
     char customKey = customKeypad.getKey();
 
     if (customKey) {  // if a button is pressed
-        Serial.print(customKey);
-        Serial.print(": ");
-        for (byte j = 0; j < ROWS; j++) {
-            for (byte i = 0; i < COLS; i++) {
-                if (customKey == buttons[j][i]) {
-                    toneFreq = tones[j][i];
-                    break;
-                }
+        if (customKey == '*') {
+            int access = unlockMode();
+
+            // NO ACCESS
+            if (access < 0) {
+                Serial.println("Access DENIED. Cannot change password without your old password first.");
+            }
+            // GAINED ACCESS
+            else {
+                changePassword();
+                Serial.println("Sweet dude! You have a new password now.");
             }
         }
-        tone(buzzer, toneFreq, 250);
-        delay(250);
-        noTone(buzzer);
+    }
+
+    if (customKey == '#') {
+        int access = unlockMode();
+        if (access < 0) {
+            Serial.println("Access denied");
+
+        } else {
+            Serial.println("YOU ARE IN!");
+        }
     }
 }
