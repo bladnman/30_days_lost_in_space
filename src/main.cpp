@@ -1,64 +1,23 @@
 #include <Arduino.h>
 #include <TM1637Display.h>
-
-/**
- *      AAA
- *    F     B
- *    F     B
- *      GGG
- *    E     C
- *    E     C
- *      DDD
- * */
-
-// Define the connections pins:
+// Module connection pins (Digital Pins)
 #define CLK 6
 #define DIO 5
-// Create display object of type TM1637Display:
-TM1637Display display = TM1637Display(CLK, DIO);
-// Create array that turns all segments on:
-const uint8_t data[] = {0xff, 0xff, 0xff, 0xff};
-// Create array that turns all segments off:
-const uint8_t blank[] = {0x00, 0x00, 0x00, 0x00};
-// You can set the individual segments per digit to spell words or create other symbols:
-const uint8_t done[] = {
-    SEG_B | SEG_C | SEG_D | SEG_E | SEG_G,          // d
-    SEG_A | SEG_B | SEG_C | SEG_D | SEG_E | SEG_F,  // O
-    SEG_C | SEG_E | SEG_G,                          // n
-    SEG_A | SEG_D | SEG_E | SEG_F | SEG_G           // E
-};
-const uint8_t leet[] = {
-    SEG_D | SEG_E | SEG_F,                  // L
-    SEG_A | SEG_D | SEG_E | SEG_F | SEG_G,  // E
-    SEG_A | SEG_D | SEG_E | SEG_F | SEG_G,  // E
-    // SEG_A | SEG_B | SEG_C | SEG_D | SEG_G,  // 3
-    // SEG_A | SEG_B | SEG_C | SEG_D | SEG_G,  // 3
-    SEG_A | SEG_B | SEG_C,  // T
-};
+// The amount of time (in milliseconds) between tests
+#define TEST_DELAY 2000
+TM1637Display display(CLK, DIO);
 void setup() {
-    // Clear the display:
-    display.clear();
-    delay(1000);
 }
 void loop() {
-    // Set the brightness:
-    display.setBrightness(4);
-    // All segments on:
+    display.setBrightness(0x0f);
+    uint8_t data[] = {0x0, 0x0, 0x0, 0x0};
     display.setSegments(data);
-    delay(500);
-    display.clear();
-    delay(500);
-    // Show counter:
-    int i;
-    for (i = 0; i <= 100; i++) {
-        display.showNumberDec(i);
-        delay(10);
-    }
-    delay(500);
-    display.clear();
-    delay(500);
-    // display.setSegments(done);
-    display.setSegments(leet);
-    while (1)
-        ;
+    display.showNumberDec(23, false, 3, 1);
+    delay(TEST_DELAY);
+    display.setSegments(data);
+    display.showNumberDec(353, true, 3, 1);
+    delay(TEST_DELAY);
+    display.setSegments(data);
+    display.showNumberDec(1688, true, 4, 0);
+    delay(TEST_DELAY);
 }
